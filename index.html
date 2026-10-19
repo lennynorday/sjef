@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sjef</title>
+<meta name="description" content="Goedkoop en simpel koken, met gedeelde voorraad en boodschappenlijst.">
+<meta name="theme-color" content="#F3F1EB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151513" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sjef">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" id="touchIcon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <section id="view-recepten" aria-labelledby="h-recepten">
+    <header class="hbar"><h1 id="h-recepten">Sjef</h1><button class="iconbtn" id="newRecipe" aria-label="Recept toevoegen" data-icon="plus"></button></header>
+    <p class="lede cell">Goedkoop en simpel koken, zonder dat het saai wordt.</p>
+    <label class="search"><span data-icon="search"></span><input id="q" type="search" placeholder="Zoek gerecht of ingrediënt" aria-label="Zoek gerecht of ingrediënt"></label>
+    <div class="filters" id="filters" role="group" aria-label="Filter recepten"></div>
+    <ul class="list" id="list"></ul>
+  </section>
+
+  <section id="view-week" aria-labelledby="h-week" hidden>
+    <header class="hbar"><h1 id="h-week">Week</h1></header>
+    <p class="lede cell">Kies gerechten die dezelfde boodschappen delen.</p>
+    <div id="week"></div>
+  </section>
+
+  <section id="view-voorraad" aria-labelledby="h-voorraad" hidden>
+    <header class="hbar"><h1 id="h-voorraad">Voorraad</h1></header>
+    <p class="hint cell">Tik aan wat je in huis hebt. Het getal laat zien in hoeveel recepten iets terugkomt.</p>
+    <div id="pantry"></div>
+  </section>
+
+  <section id="view-lijst" aria-labelledby="h-lijst" hidden>
+    <header class="hbar"><h1 id="h-lijst">Lijst</h1></header>
+    <p class="lede cell">Afgevinkt gaat naar je voorraad.</p>
+    <div class="addrow">
+      <input id="addInput" type="text" placeholder="Iets anders toevoegen" aria-label="Item toevoegen" enterkeyhint="done">
+      <button class="iconbtn" id="addBtn" aria-label="Voeg toe" data-icon="plus"></button>
+    </div>
+    <ul class="shop" id="shop"></ul>
+    <p class="empty" id="shopEmpty">Je lijst is leeg. Plan gerechten in Week, of zet iets op de lijst vanuit een recept of je voorraad.</p>
+    <button class="rowbtn" id="clearDone" hidden>Afgevinkte weghalen</button>
+
+    <div class="share">
+      <h2 class="sharetitle">Samen gebruiken</h2>
+      <p>Iedereen met jullie link ziet dezelfde voorraad, lijst, week en eigen recepten. Huiscode <code id="houseCode"></code></p>
+      <div class="btns">
+        <button class="pill solid" id="shareBtn">Deel link</button>
+        <button class="pill" id="joinBtn">Ik heb een link gekregen</button>
+      </div>
+      <p class="note" id="shareNote" aria-live="polite"></p>
+    </div>
+    <p class="sync" id="sync" aria-live="polite"></p>
+  </section>
+</main>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="dtitle" hidden>
+  <div class="bar"><button class="iconbtn back" id="closeSheet" aria-label="Terug" data-icon="back"></button><span class="barmeta" id="dcuis"></span><button class="iconbtn" id="toggleWeek" aria-pressed="false" aria-label="In je week" data-icon="calendar"></button></div>
+  <div class="wrap" id="detail"></div>
+</div>
+
+<div class="sheet" id="formSheet" role="dialog" aria-modal="true" aria-labelledby="ftitle" hidden>
+  <div class="bar"><button class="iconbtn back" id="closeForm" aria-label="Annuleren" data-icon="close"></button><span class="barmeta">Recept</span><span></span></div>
+  <div class="wrap">
+    <div class="titleblock" style="grid-template-columns:1fr"><h2 class="dtitle" id="ftitle">Recept toevoegen</h2></div>
+    <form class="rf" id="rform" novalidate>
+      <label class="fl"><span class="lab">Naam</span><input id="f-n" name="n" type="text" autocomplete="off" required></label>
+      <label class="fl"><span class="lab">Herkomst of korte typering</span><span class="help">Bijvoorbeeld ‘Italië, uit één pan’</span><input id="f-o" name="o" type="text" autocomplete="off"></label>
+      <div class="two">
+        <label class="fl"><span class="lab">Soort</span>
+          <select id="f-c" name="c"><option value="pasta">Pasta</option><option value="soep">Soep</option><option value="azie">Azië</option><option value="pan">Uit de pan</option><option value="brood">Tortilla en brood</option></select></label>
+        <label class="fl"><span class="lab">Tijd in minuten</span><input id="f-t" name="t" type="number" inputmode="numeric" min="0" step="5"></label>
+      </div>
+      <div class="two">
+        <label class="fl"><span class="lab">Prijs</span><select id="f-e" name="e"><option value="1">€ goedkoop</option><option value="2">€€ iets duurder</option></select></label>
+        <label class="fl"><span class="lab">Nodig</span><input id="f-k" name="k" type="text" placeholder="Pan, airfryer"></label>
+      </div>
+      <label class="fl"><span class="lab">Korte omschrijving</span><textarea id="f-d" name="d" rows="3"></textarea></label>
+      <label class="fl"><span class="lab">Ingrediënten</span><span class="help">Eén per regel: hoeveelheid | ingrediënt. Alternatieven scheid je met /. Begin met ? als iets optioneel is. Voorbeeld: 200 g | Orzo / Risottorijst</span><textarea id="f-i" name="i" rows="7"></textarea></label>
+      <label class="fl"><span class="lab">Stappen</span><span class="help">Eén stap per regel</span><textarea id="f-s" name="s" rows="7"></textarea></label>
+      <label class="fl"><span class="lab">Tips of variaties</span><span class="help">Optioneel, één per regel</span><textarea id="f-x" name="x" rows="3"></textarea></label>
+      <label class="fl"><span class="lab">Link naar bron</span><span class="help">Optioneel</span><input id="f-src" name="src" type="url" inputmode="url" autocomplete="off" placeholder="https://"></label>
+      <p class="err" id="formErr" role="alert"></p>
+      <div class="formactions"><button class="pill solid" type="submit">Bewaren</button></div>
+    </form>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Onderdelen">
+  <div class="in" role="tablist">
+    <button role="tab" data-tab="recepten" aria-selected="true"><span data-icon="book"></span>Recepten</button>
+    <button role="tab" data-tab="week" aria-selected="false"><span data-icon="calendar"></span>Week</button>
+    <button role="tab" data-tab="voorraad" aria-selected="false"><span data-icon="jar"></span>Voorraad</button>
+    <button role="tab" data-tab="lijst" aria-selected="false"><span data-icon="list"></span>Lijst<span class="badge" id="lijstBadge" hidden></span></button>
+  </div>
+</nav>
+
+<script src="config.js"></script>
+<script src="icons.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

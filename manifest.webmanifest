@@ -1,0 +1,17 @@
+{
+  "name": "Sjef",
+  "short_name": "Sjef",
+  "description": "Goedkoop en simpel koken, met gedeelde voorraad en boodschappenlijst.",
+  "display": "standalone",
+  "background_color": "#F3F1EB",
+  "theme_color": "#F3F1EB",
+  "lang": "nl",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
